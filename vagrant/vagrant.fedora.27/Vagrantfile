@@ -66,6 +66,13 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
+		######
+		# Install and Configure system stuff
+		######
+		# Change MAC address to stop IP address constantly changing
+		# sudo ifconfig enp0s8 hw ether 08:00:27:35:52:f1
+		# sudo /etc/init.d/network restart
+
     sudo dnf install -y patch dkms automake gcc-c++ cmake python-devel python3-devel
 
 		sudo dnf install -y ruby
@@ -88,10 +95,37 @@ Vagrant.configure("2") do |config|
 		sudo dnf config-manager --set-enabled google-chrome
 		sudo dnf install -y google-chrome-stable
 
+		# sudo dnf install -y datagrip
+		# sudo dnf install -y mysql mysql-server
+		sudo dnf install -y https://dev.mysql.com/get/mysql80-community-release-fc27-1.noarch.rpm
+		sudo dnf install -y mysql-community-server
+		systemctl start mysqld.service
+		systemctl enable mysqld.service
+		export PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
+
 		# Stuff for Colin	
+		sudo dnf upgrade -y vim-minimal dnf install -y vim-enhanced
 		sudo dnf install -y vim
-
-
+  SHELL
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+		echo "Hello world!"
+		git clone  https://github.com/DataTables/DataTablesSrc.git
+		cd DataTablesSrc
+		npm install
+		cd build
+		./make.sh all debug
+		# npm run test
+  SHELL
+  config.vm.provision "shell", inline: <<-SHELL
+		######
+		# Configure stuff
+		######
+		# nginx
+		sudo sed -i 's/user nginx/user vagrant/g' /etc/nginx/nginx.conf
+		sudo sed -i 's/worker_processes auto/worker_processes 1/g' /etc/nginx/nginx.conf
+		sudo mv /usr/share/nginx/html /usr/share/nginx/html.ORIG
+		sudo ln -s /home/vagrant/DataTablesSrc/built/DataTables /usr/share/nginx/html
+		sudo nginx
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
 		# Personal stuff (well Colin's, and he set it up)
@@ -102,14 +136,5 @@ Vagrant.configure("2") do |config|
 		echo "alias vi='vim'" >> ~/.bashrc
 		git config --global user.email colin@datatables.net
 		git config --global user.name "Colin Marks"
-  SHELL
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
-		echo "Hello world!"
-		git clone  https://github.com/DataTables/DataTablesSrc.git
-		cd DataTablesSrc
-		npm install
-		cd build
-		./make.sh all debug
-		# npm run test
   SHELL
 end
