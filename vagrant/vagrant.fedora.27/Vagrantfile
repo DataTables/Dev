@@ -14,6 +14,8 @@ Vagrant.configure("2") do |config|
   # boxes at https://vagrantcloud.com/search.
   config.vm.box = "bento/fedora-27"
 
+	# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
+	config.ssh.forward_agent = true
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -73,8 +75,12 @@ Vagrant.configure("2") do |config|
 		# sudo ifconfig enp0s8 hw ether 08:00:27:35:52:f1
 		# sudo /etc/init.d/network restart
 
-    sudo dnf install -y patch dkms automake gcc-c++ cmake python-devel python3-devel
+		sudo dnf install -y patch dkms automake gcc-c++ cmake python-devel python3-devel
 
+
+
+
+		sudo dnf install -y git
 		sudo dnf install -y ruby
 		sudo dnf install -y ruby-devel
 		sudo gem install sass --no-user-install
@@ -85,8 +91,8 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y nginx
 
 		sudo dnf install -y npm
-		sudo dnf install -y git
 		sudo dnf install -y rsync
+		sudo dnf install -y banner
 
 		# is fontconfig still needed?
 		sudo dnf install -y fontconfig
@@ -95,37 +101,71 @@ Vagrant.configure("2") do |config|
 		sudo dnf config-manager --set-enabled google-chrome
 		sudo dnf install -y google-chrome-stable
 
+		# Stuff for Colin	
+		sudo dnf upgrade -y vim-minimal dnf install -y vim-enhanced
+		sudo dnf install -y vim
+
 		# sudo dnf install -y datagrip
 		# sudo dnf install -y mysql mysql-server
 		sudo dnf install -y https://dev.mysql.com/get/mysql80-community-release-fc27-1.noarch.rpm
 		sudo dnf install -y mysql-community-server
-		systemctl start mysqld.service
-		systemctl enable mysqld.service
-		export PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
-
-		# Stuff for Colin	
-		sudo dnf upgrade -y vim-minimal dnf install -y vim-enhanced
-		sudo dnf install -y vim
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
-		echo "Hello world!"
+		##################################
+		# Clone and build
+		##################################
+
 		git clone  https://github.com/DataTables/DataTablesSrc.git
-		cd DataTablesSrc
+
+		mkdir -p DataTablesSrc/extensions
+		cd DataTablesSrc/extensions
+
+		##################################
+		# Clone and build
+		# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+		ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts
+		ssh -T git@bitbucket.org
+		git clone git@bitbucket.org:sprymedia/editor.git
+
+		ln -s editor Editor
+		cd ..
 		npm install
 		cd build
 		./make.sh all debug
+		sudo cp /vagrant/config.php /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
 		# npm run test
   SHELL
   config.vm.provision "shell", inline: <<-SHELL
-		######
+		##################################
 		# Configure stuff
+		##################################
+
 		######
 		# nginx
+		######
 		sudo sed -i 's/user nginx/user vagrant/g' /etc/nginx/nginx.conf
 		sudo sed -i 's/worker_processes auto/worker_processes 1/g' /etc/nginx/nginx.conf
 		sudo mv /usr/share/nginx/html /usr/share/nginx/html.ORIG
 		sudo ln -s /home/vagrant/DataTablesSrc/built/DataTables /usr/share/nginx/html
-		sudo nginx
+		sudo service nginx start
+		sudo systemctl enable nginx
+
+		######
+		# MySQL
+		######
+		systemctl start mysqld.service
+		systemctl enable mysqld.service
+		export PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
+		sudo cp /vagrant/my.cnf /root/.my.cnf
+		sudo echo "password = $PASSWORD" >> /root/.my.cnf
+		sudo mysql --connect-expired-password < /vagrant/change_root_password.sql
+		sudo cp /vagrant/my.cnf /root/.my.cnf
+		sudo echo "password = Pa55word123." >> /root/.my.cnf
+		mysql < /vagrant/create_test_database.sql
+		mysql test < /home/vagrant/DataTablesSrc/extensions/editor/examples/sql/mysql.sql
+		sudo mysql < /vagrant/create_sa_user.sql
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
 		# Personal stuff (well Colin's, and he set it up)
@@ -134,6 +174,7 @@ Vagrant.configure("2") do |config|
 		echo "set ts=2" >> ~/.exrc
 		echo "set sw=2" >> ~/.exrc
 		echo "alias vi='vim'" >> ~/.bashrc
+		echo "alias la='ls -a'" >> ~/.bashrc
 		git config --global user.email colin@datatables.net
 		git config --global user.name "Colin Marks"
   SHELL
