@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
   config.vm.box = "bento/fedora-27"
 
 	# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
-	config.ssh.forward_agent = true
+	config.ssh.forward_agent = false
 
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
@@ -85,10 +85,26 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y ruby-devel
 		sudo gem install sass --no-user-install
 
+		######
+		# My setup, gives 404
+		######
 		sudo dnf install -y php
-		sudo dnf install -y php-xml
-
+		sudo dnf install -y php-xml php-fpm php-common
 		sudo dnf install -y nginx
+	
+		######
+		# https://www.if-not-true-then-false.com/2011/install-nginx-php-fpm-on-fedora-centos-red-hat-rhel/
+		######
+		# sudo rpm -Uvh http://rpms.famillecollet.com/fedora/remi-release-27.rpm
+		# sudo dnf --enablerepo=remi --enablerepo=remi-php72 install -y nginx php-fpm php-common
+		# sudo dnf --enablerepo=remi --enablerepo=remi-php72 install -y php-opcache php-pecl-apcu php-cli php-pear php-pdo php-mysqlnd php-pgsql php-pecl-mongodb php-pecl-redis php-pecl-memcache php-pecl-memcached php-gd php-mbstring php-mcrypt php-xml
+		# sudo systemctl stop httpd.service
+		# sudo systemctl start nginx.service
+		# sudo systemctl start php-fpm.service
+		# sudo systemctl disable httpd.service
+		# sudo systemctl enable nginx.service
+		# sudo systemctl enable php-fpm.service
+
 
 		sudo dnf install -y npm
 		sudo dnf install -y rsync
@@ -145,12 +161,20 @@ Vagrant.configure("2") do |config|
 		######
 		# nginx
 		######
+		# Modify conf files
 		sudo sed -i 's/user nginx/user vagrant/g' /etc/nginx/nginx.conf
 		sudo sed -i 's/worker_processes auto/worker_processes 1/g' /etc/nginx/nginx.conf
+		sudo sed -i 's~/run/php-fpm/www.sock~127.0.0.1:9000~g' /etc/php-fpm.d/www.conf
+
+		# Link to build area
 		sudo mv /usr/share/nginx/html /usr/share/nginx/html.ORIG
 		sudo ln -s /home/vagrant/DataTablesSrc/built/DataTables /usr/share/nginx/html
+
+		# Start it all
 		sudo service nginx start
 		sudo systemctl enable nginx
+		sudo service php-fpm start
+		sudo systemctl enable php-fpm
 
 		######
 		# MySQL
