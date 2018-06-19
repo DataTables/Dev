@@ -68,13 +68,9 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
   config.vm.provision "shell", inline: <<-SHELL
-		######
+		##################################
 		# Install and Configure system stuff
-		######
-		# Change MAC address to stop IP address constantly changing
-		# sudo ifconfig enp0s8 hw ether 08:00:27:35:52:f1
-		# sudo /etc/init.d/network restart
-
+		##################################
 		sudo dnf install -y patch dkms automake gcc-c++ cmake python-devel python3-devel
 
 		sudo dnf install -y git
@@ -90,8 +86,6 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y npm
 		sudo dnf install -y rsync
 		sudo dnf install -y banner
-
-		# is fontconfig still needed?
 		sudo dnf install -y fontconfig
 
 		sudo dnf install -y fedora-workstation-repositories
@@ -102,8 +96,6 @@ Vagrant.configure("2") do |config|
 		sudo dnf upgrade -y vim-minimal dnf install -y vim-enhanced
 		sudo dnf install -y vim
 
-		# sudo dnf install -y datagrip
-		# sudo dnf install -y mysql mysql-server
 		sudo dnf install -y https://dev.mysql.com/get/mysql80-community-release-fc27-1.noarch.rpm
 		sudo dnf install -y mysql-community-server
   SHELL
@@ -117,8 +109,7 @@ Vagrant.configure("2") do |config|
 		mkdir -p DataTablesSrc/extensions
 		cd DataTablesSrc/extensions
 
-		##################################
-		# Clone and build
+		######
 		# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
     mkdir -p ~/.ssh
     chmod 700 ~/.ssh
@@ -131,7 +122,13 @@ Vagrant.configure("2") do |config|
 		npm install
 		cd build
 		./make.sh all debug
-		sudo cp /vagrant/config.php /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
+
+		# ugly way of common code in case editor doesn't get checked out
+		# vagrant doesn't seem to support conditionals, will check at some point in the future
+		mkdir -p /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
+		cp /vagrant/config.php /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
+
+		# Feel free to run the unit tests
 		# npm run test
   SHELL
   config.vm.provision "shell", inline: <<-SHELL
@@ -172,8 +169,16 @@ Vagrant.configure("2") do |config|
 		sudo cp /vagrant/my.cnf /root/.my.cnf
 		sudo echo "password = Pa55word123." >> /root/.my.cnf
 		mysql < /vagrant/create_test_database.sql
+
+		# mkdir and touch a very ugly way of checking to see if the editor clone worked
+		mkdir -p /home/vagrant/DataTablesSrc/extensions/editor/examples/sql
+		touch /home/vagrant/DataTablesSrc/extensions/editor/examples/sql/mysql.sql
 		mysql test < /home/vagrant/DataTablesSrc/extensions/editor/examples/sql/mysql.sql
+
+		mkdir -p /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql
+		touch /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/mysql.sql
 		mysql test < /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/mysql.sql
+
 		sudo mysql < /vagrant/create_sa_user.sql
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
