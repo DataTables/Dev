@@ -67,20 +67,16 @@ Vagrant.configure("2") do |config|
   # Enable provisioning with a shell script. Additional provisioners such as
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
-  config.vm.provision "shell", inline: <<-SHELL
+  config.vm.provision "shell", env: {"FRED"  => $USER}, inline: <<-SHELL
 		##################################
 		# Install and Configure system stuff
 		##################################
 		sudo dnf install -y patch dkms automake gcc-c++ cmake python-devel python3-devel
-
 		sudo dnf install -y git
-		sudo dnf install -y ruby
-		sudo dnf install -y ruby-devel
+		sudo dnf install -y ruby ruby-devel
 		sudo gem install sass --no-user-install
 
-		sudo dnf install -y php php-tidy
-		sudo dnf install -y php-xml php-fpm php-common
-		sudo dnf install -y php-pdo php-pdo_mysql
+		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql
 		sudo dnf install -y nginx
 	
 		sudo dnf install -y npm
@@ -109,6 +105,8 @@ Vagrant.configure("2") do |config|
 		# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
     mkdir -p ~/.ssh
     chmod 700 ~/.ssh
+
+		sh /vagrant/setup_git.sh #{ENV['USER']}
 
 		# git clone  https://github.com/DataTables/DataTablesSrc.git
 		ssh-keyscan -H github.com >> ~/.ssh/known_hosts
@@ -144,10 +142,9 @@ Vagrant.configure("2") do |config|
 		######
 		# nginx
 		######
-		# Modify conf files
+		echo "Modify conf files"
 		sudo sed -i 's/user nginx/user vagrant/g' /etc/nginx/nginx.conf
 		sudo sed -i 's/worker_processes auto/worker_processes 1/g' /etc/nginx/nginx.conf
-		# sudo sed -i 's~/run/php-fpm/www.sock~127.0.0.1:9000~g' /etc/php-fpm.d/www.conf
 		sudo sed -i 's~user = apache~user = vagrant~g' /etc/php-fpm.d/www.conf
 		sudo sed -i 's~group = apache~group = vagrant~g' /etc/php-fpm.d/www.conf
 		sudo sed -i 's~listen.acl_users = apache,nginx~listen.acl_users = apache,nginx,vagrant~g' /etc/php-fpm.d/www.conf
@@ -156,7 +153,7 @@ Vagrant.configure("2") do |config|
 		sudo mv /usr/share/nginx/html /usr/share/nginx/html.ORIG
 		sudo ln -s /home/vagrant/DataTablesSrc/built/DataTables /usr/share/nginx/html
 
-		# Start it all
+		echo "Start web stuff"
 		sudo service nginx start
 		sudo systemctl enable nginx
 		sudo service php-fpm start
@@ -165,8 +162,13 @@ Vagrant.configure("2") do |config|
 		######
 		# MySQL
 		######
+		echo Starting services
 		systemctl start mysqld.service
 		systemctl enable mysqld.service
+
+		echo "Configuring MySQL"
+		# sometimes mysqld longer to start, should find a tidy way of doing this
+		sleep 2
 		export PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
 		sudo cp /vagrant/my.cnf /root/.my.cnf
 		sudo echo "password = $PASSWORD" >> /root/.my.cnf
@@ -175,6 +177,7 @@ Vagrant.configure("2") do |config|
 		sudo echo "password = Pa55word123." >> /root/.my.cnf
 		mysql < /vagrant/create_test_database.sql
 
+		echo "Creating tables"
 		# mkdir and touch a very ugly way of checking to see if the editor clone worked
 		mkdir -p /home/vagrant/DataTablesSrc/extensions/editor/examples/sql
 		touch /home/vagrant/DataTablesSrc/extensions/editor/examples/sql/mysql.sql
@@ -194,8 +197,6 @@ Vagrant.configure("2") do |config|
 		echo "set sw=2" >> ~/.exrc
 		echo "alias vi='vim'" >> ~/.bashrc
 		echo "alias la='ls -a'" >> ~/.bashrc
-		git config --global user.email colin@datatables.net
-		git config --global user.name "Colin Marks"
 		echo "IP ADDRESS IS" $(ifconfig enp0s8 | grep inet | head -1 | cut -d " " -f 10)
   SHELL
 end
