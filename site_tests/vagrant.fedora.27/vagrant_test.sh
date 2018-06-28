@@ -6,8 +6,8 @@ if [ $# -eq 1 ] ; then
 fi
 
 while : ; do
-	vagrant up
 	vagrant destroy -f
+	vagrant up
 	[[ $SLEEP -ne 0 ]] || break;
 	sleep $SLEEP
 done
