@@ -4,7 +4,7 @@ EMAIL_ADDRESS="notify@datatables.net"
 ADDITIONAL_EMAIL_ADDRESSES="colin@datatables.net allan@datatables.net"
 TEST_PASS="/vagrant/test_pass.txt"
 TEST_LOG="/tmp/test.txt"
-PASS_THRESHOLD=5
+PASS_THRESHOLD=10
 
 rm -f $TEST_LOG
 date | tee $TEST_LOG
