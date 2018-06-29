@@ -1,7 +1,5 @@
 #!/bin/bash
 
-EMAIL_ADDRESS="notify@datatables.net"
-ADDITIONAL_EMAIL_ADDRESSES="colin@datatables.net allan@datatables.net"
 TEST_PASS="/vagrant/test_pass.txt"
 TEST_LOG="/tmp/test.txt"
 PASS_THRESHOLD=10
@@ -11,7 +9,7 @@ date | tee $TEST_LOG
 npm run website | tee -a $TEST_LOG
 if [ ${PIPESTATUS[0]} -ne 0 ] ; then
 	echo "emailing test failure"
-	echo -e "to: colin@datatables.net\nsubject: Test failed\n"| (cat - && uuencode $TEST_LOG test.txt) | ssmtp $EMAIL_ADDRESS
+	echo -e "to: colin@datatables.net\nsubject: Test failed\n"| (cat - && uuencode $TEST_LOG test.txt) | ssmtp $EMAIL_ADDRESS $ADDITIONAL_EMAIL_ADDRESSES
 	rm -f $TEST_PASS
 else
 	echo "Good result"

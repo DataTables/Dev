@@ -71,7 +71,7 @@ Vagrant.configure("2") do |config|
 		##################################
 		# Install and Configure system stuff
 		##################################
-		sudo dnf install -y git npm rsync ssmtp sharutils
+		sudo dnf install -y git npm rsync ssmtp sharutils jq
 
 		sudo dnf install -y fedora-workstation-repositories
 		sudo dnf config-manager --set-enabled google-chrome
@@ -83,9 +83,24 @@ Vagrant.configure("2") do |config|
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
 		##################################
+		# Some env stuff
+		##################################
+		echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
+		echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
+
+		######
+		# Personal stuff (well Colin's, and he set it up)
+		echo "set ic" >> ~/.exrc
+		echo "set ai" >> ~/.exrc
+		echo "set ts=2" >> ~/.exrc
+		echo "set sw=2" >> ~/.exrc
+		echo "alias vi='vim'" >> ~/.bashrc
+		echo "alias la='ls -a'" >> ~/.bashrc
+  SHELL
+  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+		##################################
 		# Clone and build
 		##################################
-
 
 		######
 		# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
@@ -105,15 +120,6 @@ Vagrant.configure("2") do |config|
 		npm install
 
 		sh /vagrant/run_tests.sh
-  SHELL
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
-		# Personal stuff (well Colin's, and he set it up)
-		echo "set ic" >> ~/.exrc
-		echo "set ai" >> ~/.exrc
-		echo "set ts=2" >> ~/.exrc
-		echo "set sw=2" >> ~/.exrc
-		echo "alias vi='vim'" >> ~/.bashrc
-		echo "alias la='ls -a'" >> ~/.bashrc
-		echo "IP ADDRESS IS" $(ifconfig enp0s8 | grep inet | head -1 | cut -d " " -f 10)
+		sh /vagrant/check_links.sh
   SHELL
 end
