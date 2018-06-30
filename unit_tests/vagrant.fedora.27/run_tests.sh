@@ -16,15 +16,13 @@ fi
 
 if [ "$ERROR" = "YES" ] ; then
 	echo "emailing test failure"
-	# echo -e "to: colin@datatables.net\nsubject: Unit Test failed\n"| (cat - && uuencode $TEST_LOG test.txt) | ssmtp $EMAIL_ADDRESS $ADDITIONAL_EMAIL_ADDRESSES
-	echo -e "to: colin@datatables.net\nsubject: Unit Test failed\n"| (cat - && uuencode $TEST_LOG test.txt) | ssmtp $EMAIL_ADDRESS colin@datatables.net
+	echo -e "to: colin@datatables.net\nsubject: Unit Test failed\n"| (cat - && uuencode $TEST_LOG test.txt) | ssmtp $EMAIL_ADDRESS $ADDITIONAL_EMAIL_ADDRESSES
 	rm -f $TEST_PASS
 else
 	echo "Good result"
 	date >> $TEST_PASS
 	if [ $(wc -l $TEST_PASS | cut -d ' ' -f 1) -ge $PASS_THRESHOLD ] ; then
-		# echo -e "to: $EMAIL_ADDRESS\nsubject: Unit Test passed $PASS_THRESHOLD times\n"| ssmtp $EMAIL_ADDRESS $ADDITIONAL_EMAIL_ADDRESSES
-		echo -e "to: $EMAIL_ADDRESS\nsubject: Unit Test passed $PASS_THRESHOLD times\n"| ssmtp $EMAIL_ADDRESS colin@datatables.net
+		echo -e "to: $EMAIL_ADDRESS\nsubject: Unit Test passed $PASS_THRESHOLD times\n"| ssmtp $EMAIL_ADDRESS $ADDITIONAL_EMAIL_ADDRESSES
 		rm -f $TEST_PASS
 	fi
 fi
