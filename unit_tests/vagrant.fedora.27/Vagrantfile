@@ -79,10 +79,7 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql
 		sudo dnf install -y nginx
 	
-		sudo dnf install -y npm
-		sudo dnf install -y rsync
-		sudo dnf install -y banner
-		sudo dnf install -y fontconfig
+		sudo dnf install -y npm rsync fontconfig ssmtp sharutils
 
 		sudo dnf install -y fedora-workstation-repositories
 		sudo dnf config-manager --set-enabled google-chrome
@@ -113,14 +110,18 @@ Vagrant.configure("2") do |config|
 		ssh -T git@github.com
 		git clone git@github.com:DataTables/DataTablesSrc.git
 
-		mkdir -p DataTablesSrc/extensions
-		cd DataTablesSrc/extensions
-
 		ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts
 		ssh -T git@bitbucket.org
 		git clone git@bitbucket.org:sprymedia/editor.git
 
-		ln -s editor Editor
+		# Needed for email notifications
+		git clone git@bitbucket.org:sprymedia/datatables-site.git
+		sudo cp datatables-site/test/tools/ssmtp.conf /etc/ssmtp/ssmtp.conf
+    sudo cp datatables-site/test/tools/revaliases /etc/ssmtp/revaliases
+
+		mkdir -p DataTablesSrc/extensions
+		cd DataTablesSrc/extensions
+		ln -s ~/editor Editor
 		cd ..
 		npm install
 		cd build
@@ -130,14 +131,25 @@ Vagrant.configure("2") do |config|
 		# vagrant doesn't seem to support conditionals, will check at some point in the future
 		mkdir -p /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
 		cp /vagrant/config.php /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
-
-		# Feel free to run the unit tests
-		# npm run test
   SHELL
   config.vm.provision "shell", inline: <<-SHELL
 		##################################
 		# Configure stuff
 		##################################
+
+		######
+    # Some env stuff
+    echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
+    echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
+	
+		######
+		# Personal stuff (well Colin's, and he set it up)
+		echo "set ic" >> ~/.exrc
+		echo "set ai" >> ~/.exrc
+		echo "set ts=2" >> ~/.exrc
+		echo "set sw=2" >> ~/.exrc
+		echo "alias vi='vim'" >> ~/.bashrc
+		echo "alias la='ls -a'" >> ~/.bashrc
 
 		######
 		# nginx
@@ -190,13 +202,10 @@ Vagrant.configure("2") do |config|
 		sudo mysql < /vagrant/create_sa_user.sql
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
-		# Personal stuff (well Colin's, and he set it up)
-		echo "set ic" >> ~/.exrc
-		echo "set ai" >> ~/.exrc
-		echo "set ts=2" >> ~/.exrc
-		echo "set sw=2" >> ~/.exrc
-		echo "alias vi='vim'" >> ~/.bashrc
-		echo "alias la='ls -a'" >> ~/.bashrc
-		echo "IP ADDRESS IS" $(ifconfig enp0s8 | grep inet | head -1 | cut -d " " -f 10)
+		##################################
+		# Now run the tests
+		##################################
+		cd DataTablesSrc
+		sh /vagrant/run_tests.sh
   SHELL
 end
