@@ -71,6 +71,7 @@ Vagrant.configure("2") do |config|
 		##################################
 		# Install and Configure system stuff
 		##################################
+		# sudo dnf update -y
 		sudo dnf install -y git npm rsync ssmtp sharutils jq
 
 		sudo dnf install -y fedora-workstation-repositories
