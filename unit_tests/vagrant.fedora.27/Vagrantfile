@@ -97,6 +97,19 @@ Vagrant.configure("2") do |config|
 		# Clone and build
 		##################################
 
+		######
+    # Some env stuff
+    echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
+    echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
+
+		######
+		# Personal stuff (well Colin's, and he set it up)
+		echo "set ic" >> ~/.exrc
+		echo "set ai" >> ~/.exrc
+		echo "set ts=2" >> ~/.exrc
+		echo "set sw=2" >> ~/.exrc
+		echo "alias vi='vim'" >> ~/.bashrc
+		echo "alias la='ls -a'" >> ~/.bashrc
 
 		######
 		# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
