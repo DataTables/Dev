@@ -6,9 +6,9 @@ if [ $# -eq 1 ] ; then
 	SLEEP=$1
 fi
 
-# Work out which interface to use (needed on Gemini as it has two)
-export NETWORK_INTERFACE=$(route | grep '^default' | grep -o '[^ ]*$')
-echo "Bridging on network interface $NETWORK_INTERFACE"
+pkill -U $(id -u) ssh-agent
+eval `ssh-agent`
+ssh-add ~/.ssh/id_rsa
 
 while : ; do
 	vagrant destroy -f
