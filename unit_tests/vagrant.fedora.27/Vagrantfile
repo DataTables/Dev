@@ -215,11 +215,4 @@ Vagrant.configure("2") do |config|
 
 		sudo mysql < /vagrant/create_sa_user.sql
   SHELL
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
-		##################################
-		# Now run the tests
-		##################################
-		cd DataTablesSrc
-		sh /vagrant/run_tests.sh
-  SHELL
 end
