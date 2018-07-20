@@ -120,8 +120,5 @@ Vagrant.configure("2") do |config|
 
 		cd datatables-site/test
 		npm install
-
-		sh /vagrant/run_tests.sh
-		sh /vagrant/check_links.sh
   SHELL
 end

@@ -75,6 +75,9 @@ test_component() {
 	test_files $1 "nightly"
 }
 
+#################
+echo "Running website link test"
+
 # get the version file and ensure size we expected
 get_file $VERSION_FILE $VERSION_URL
 if [ $(jq 'keys[]' $VERSION_FILE  | wc -l) -ne $EXPECTED_COMPONENTS ] ; then
