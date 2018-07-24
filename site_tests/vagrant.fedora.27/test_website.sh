@@ -2,9 +2,11 @@
 
 TEST_PASS="/vagrant/test_pass.txt"
 TEST_LOG="/tmp/test.txt"
+TEST_DIR="/tmp/site-test*"
 PASS_THRESHOLD=10
 
 rm -f $TEST_LOG
+rm -rf $TEST_DIR
 date | tee $TEST_LOG
 npm run website | tee -a $TEST_LOG
 if [ ${PIPESTATUS[0]} -ne 0 ] ; then
