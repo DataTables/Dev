@@ -17,7 +17,7 @@ else
 	echo "Good result"
 	date >> $TEST_PASS
 	if [ $(wc -l $TEST_PASS | cut -d ' ' -f 1) -ge $PASS_THRESHOLD ] ; then
-		echo -e "to: $EMAIL_ADDRESS\nsubject: Test passed $PASS_THRESHOLD times\n"| ssmtp $EMAIL_ADDRESS $ADDITIONAL_EMAIL_ADDRESSES
+		echo -e "to: $EMAIL_ADDRESS\nsubject: Website tests passed $PASS_THRESHOLD times\n"| ssmtp $EMAIL_ADDRESS $ADDITIONAL_EMAIL_ADDRESSES
 		rm -f $TEST_PASS
 	fi
 fi
