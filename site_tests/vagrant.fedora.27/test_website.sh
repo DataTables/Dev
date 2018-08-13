@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEST_PASS="/vagrant/test_pass.txt"
+TEST_PASS="/vagrant/test_website_pass.txt"
 TEST_LOG="/tmp/test.txt"
 TEST_DIR="/tmp/site-test*"
 PASS_THRESHOLD=10

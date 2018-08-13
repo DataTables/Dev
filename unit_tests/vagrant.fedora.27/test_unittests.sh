@@ -1,6 +1,6 @@
 #!/bin/bash
 
-TEST_PASS="/vagrant/test_pass.txt"
+TEST_PASS="/vagrant/test_unittests_pass.txt"
 TEST_LOG="/tmp/test.txt"
 PASS_THRESHOLD=10
 ERROR="NO"
