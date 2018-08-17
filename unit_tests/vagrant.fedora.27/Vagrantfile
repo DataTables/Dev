@@ -205,10 +205,6 @@ Vagrant.configure("2") do |config|
 
 		echo "Creating tables"
 		# mkdir and touch a very ugly way of checking to see if the editor clone worked
-		mkdir -p /home/vagrant/DataTablesSrc/extensions/editor/examples/sql
-		touch /home/vagrant/DataTablesSrc/extensions/editor/examples/sql/mysql.sql
-		mysql test < /home/vagrant/DataTablesSrc/extensions/editor/examples/sql/mysql.sql
-
 		mkdir -p /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql
 		touch /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/mysql.sql
 		mysql test < /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/mysql.sql
