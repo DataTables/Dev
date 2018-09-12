@@ -1,5 +1,10 @@
 #!/bin/sh
-## Clone into DataTables and its various supporting repos
+######
+# Clone into DataTables and its various supporting repos
+# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
+######
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
 
 # SSH key setup
 ssh-keyscan -H github.com >> ~/.ssh/known_hosts
@@ -10,6 +15,11 @@ ssh -T git@bitbucket.org
 
 # DataTablesSrc
 git clone git@github.com:DataTables/DataTablesSrc.git
+
+# Needed for email notifications (SpryMedia devs)
+git clone git@bitbucket.org:sprymedia/dt-test-tools.git
+sudo cp dt-test-tools/config_ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf
+sudo cp dt-test-tools/config_ssmtp/revaliases /etc/ssmtp/revaliases
 
 # Editor and packages
 # Note that if you don't have access to the bitbucket Editor repos, you'll get
@@ -31,15 +41,8 @@ npm install
 cd ../Editor-Node-Demo
 npm install
 
-# DataTables site
-# Needed for email notifications (SpryMedia devs)
-cd ../../../
-git clone git@bitbucket.org:sprymedia/datatables-site.git
-sudo cp datatables-site/test/tools/ssmtp.conf /etc/ssmtp/ssmtp.conf
-sudo cp datatables-site/test/tools/revaliases /etc/ssmtp/revaliases
-
 # Build - will also checkout and build the extensions
-cd DataTablesSrc/build
+cd ~/DataTablesSrc/build
 ./make.sh all debug
 
 # ugly way of common code in case editor doesn't get checked out

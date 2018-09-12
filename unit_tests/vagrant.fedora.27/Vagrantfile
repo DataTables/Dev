@@ -121,11 +121,6 @@ Vagrant.configure("2") do |config|
 		echo "alias vi='vim'" >> ~/.bashrc
 		echo "alias la='ls -a'" >> ~/.bashrc
 
-		######
-		# https://stefanscherer.github.io/access-private-github-repos-in-vagrant-up/
-		mkdir -p ~/.ssh
-		chmod 700 ~/.ssh
-
 		sh /vagrant/setup_git.sh #{ENV['USER']}
 		sh /vagrant/clone_git.sh
   SHELL

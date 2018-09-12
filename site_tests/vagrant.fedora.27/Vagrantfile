@@ -113,11 +113,12 @@ Vagrant.configure("2") do |config|
 
 		ssh-keyscan -H bitbucket.org >> ~/.ssh/known_hosts
 		ssh -T git@bitbucket.org
+
+		git clone git@bitbucket.org:sprymedia/dt-test-tools.git
+		sudo cp dt-test-tools/config_ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf
+		sudo cp dt-test-tools/config_ssmtp/revaliases /etc/ssmtp/revaliases
+
 		git clone git@bitbucket.org:sprymedia/datatables-site.git
-
-		sudo cp datatables-site/test/tools/ssmtp.conf /etc/ssmtp/ssmtp.conf
-		sudo cp datatables-site/test/tools/revaliases /etc/ssmtp/revaliases
-
 		cd datatables-site/test
 		npm install
   SHELL
