@@ -1,0 +1,7 @@
+{
+	"mysql": {
+		"user": "sa",
+		"pass": "Pa55word123.",
+		"db": "test"
+	}
+}

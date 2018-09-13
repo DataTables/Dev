@@ -74,6 +74,7 @@ Vagrant.configure("2") do |config|
 		##################################
 		sudo dnf install -y patch dkms automake gcc-c++ cmake python-devel python3-devel
 		sudo dnf install -y git
+		sudo dnf install -y jq # CLI JSON parser
 		sudo dnf install -y ruby ruby-devel
 		sudo gem install sass --no-user-install
 
@@ -156,6 +157,9 @@ Vagrant.configure("2") do |config|
 		# Link to build area
 		sudo mv /usr/share/nginx/html /usr/share/nginx/html.ORIG
 		sudo ln -s /home/vagrant/DataTablesSrc/built/DataTables /usr/share/nginx/html
+
+		# Editor Node and .NET proxies for nginx
+		sudo cp /vagrant/nginx-editor-node.conf /etc/nginx/conf.d/
 
 		echo "Start web stuff"
 		sudo service nginx start
