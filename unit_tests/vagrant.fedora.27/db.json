@@ -2,6 +2,7 @@
 	"mysql": {
 		"user": "sa",
 		"pass": "Pa55word123.",
-		"db": "test"
+		"db": "test",
+		"connectionString": "Server=127.0.0.1;Port=3306;Database=test;Uid=sa;Pwd=Pa55word123.;"
 	}
 }
