@@ -87,11 +87,6 @@ Vagrant.configure("2") do |config|
 		sudo dnf config-manager --set-enabled google-chrome
 		sudo dnf install -y google-chrome-stable
 
-		# Stuff for Colin	
-		sudo dnf upgrade -y vim-minimal
-		sudo dnf install -y vim-enhanced
-		sudo dnf install -y vim
-
 		sudo dnf install -y https://dev.mysql.com/get/mysql80-community-release-fc27-1.noarch.rpm
 		sudo dnf install -y mysql-community-server
   SHELL
@@ -113,15 +108,6 @@ Vagrant.configure("2") do |config|
     	echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
     	echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
 
-		######
-		# Personal stuff (well Colin's, and he set it up)
-		echo "set ic" >> ~/.exrc
-		echo "set ai" >> ~/.exrc
-		echo "set ts=2" >> ~/.exrc
-		echo "set sw=2" >> ~/.exrc
-		echo "alias vi='vim'" >> ~/.bashrc
-		echo "alias la='ls -a'" >> ~/.bashrc
-
 		sh /vagrant/setup_git.sh #{ENV['USER']}
 		sh /vagrant/clone_git.sh
   SHELL
@@ -134,16 +120,6 @@ Vagrant.configure("2") do |config|
     	# Some env stuff
     	echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
     	echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
-	
-		######
-		# Personal stuff (well Colin's, and he set it up)
-		echo "set ic" >> ~/.exrc
-		echo "set ai" >> ~/.exrc
-		echo "set ts=2" >> ~/.exrc
-		echo "set sw=2" >> ~/.exrc
-		echo "alias vi='vim'" >> ~/.bashrc
-		echo "alias la='ls -a'" >> ~/.bashrc
-		echo "export DOTNET_CLI_TELEMETRY_OPTOUT=1" >> ~/.bashrc
 
 		######
 		# .NET Core
@@ -210,4 +186,6 @@ Vagrant.configure("2") do |config|
 
 		sudo mysql < /vagrant/create_sa_user.sql
   SHELL
+	config.vm.provision "shell", path: "setup_nfs.sh"
+	config.vm.provision "shell", privileged: false, path: "setup_env_colin.sh"
 end
