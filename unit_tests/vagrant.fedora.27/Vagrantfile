@@ -86,9 +86,6 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y fedora-workstation-repositories
 		sudo dnf config-manager --set-enabled google-chrome
 		sudo dnf install -y google-chrome-stable
-
-		sudo dnf install -y https://dev.mysql.com/get/mysql80-community-release-fc27-1.noarch.rpm
-		sudo dnf install -y mysql-community-server
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
 		##################################
@@ -164,35 +161,6 @@ Vagrant.configure("2") do |config|
 		sudo systemctl enable php-fpm
 
 		######
-		# MySQL
-		######
-		echo Starting services
-		sudo sed -i 's/# default-authentication-plugin=mysql_native_password/default-authentication-plugin=mysql_native_password/g' /etc/my.cnf
-
-		systemctl start mysqld.service
-		systemctl enable mysqld.service
-
-		echo "Configuring MySQL"
-		# sometimes mysqld longer to start, should find a tidy way of doing this
-		sleep 2
-		cat /var/log/mysqld.log
-		export PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
-		sudo cp /vagrant/my.cnf /root/.my.cnf
-		sudo echo "password = $PASSWORD" >> /root/.my.cnf
-		sudo mysql --connect-expired-password < /vagrant/change_root_password.sql
-		sudo cp /vagrant/my.cnf /root/.my.cnf
-		sudo echo "password = Pa55word123." >> /root/.my.cnf
-		mysql < /vagrant/create_test_database.sql
-
-		echo "Creating tables"
-		# mkdir and touch a very ugly way of checking to see if the editor clone worked
-		mkdir -p /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql
-		touch /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/mysql.sql
-		mysql test < /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/mysql.sql
-
-		sudo mysql < /vagrant/create_sa_user.sql
-
-		######
 		# Systemd for Node and .NET servers
 		######
 		echo << EOD > /etc/systemd/system/editor-node.service
@@ -230,9 +198,8 @@ EOD
 		sudo chmod +x /etc/systemd/system/editor-net.service
 		sudo systemctl start editor-net
 		sudo systemctl enable editor-net
-
-
   SHELL
+	config.vm.provision "shell", path: "setup_mysql.sh"
 	config.vm.provision "shell", path: "setup_nfs.sh"
 	config.vm.provision "shell", privileged: false, path: "setup_env_colin.sh"
 end

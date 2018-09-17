@@ -5,8 +5,8 @@
 # Env
 echo "set ic" >> ~/.exrc
 echo "set ai" >> ~/.exrc
-echo "set ts=2" >> ~/.exrc
-echo "set sw=2" >> ~/.exrc
+echo "set ts=4" >> ~/.exrc
+echo "set sw=4" >> ~/.exrc
 echo "alias vi='vim'" >> ~/.bashrc
 echo "alias la='ls -a'" >> ~/.bashrc
 
