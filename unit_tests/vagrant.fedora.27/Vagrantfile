@@ -103,6 +103,8 @@ Vagrant.configure("2") do |config|
 		nvm install stable
 		npm install -g gulp-cli
 
+		sudo ln -s $(nvm which current) /usr/bin/node
+
 		######
     	# Some env stuff
     	echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
@@ -142,6 +144,10 @@ Vagrant.configure("2") do |config|
 		sudo sed -i 's~user = apache~user = vagrant~g' /etc/php-fpm.d/www.conf
 		sudo sed -i 's~group = apache~group = vagrant~g' /etc/php-fpm.d/www.conf
 		sudo sed -i 's~listen.acl_users = apache,nginx~listen.acl_users = apache,nginx,vagrant~g' /etc/php-fpm.d/www.conf
+
+		sudo chmod +x /var/lib/nginx
+		sudo chmod +x /var/lib/nginx/tmp
+		sudo chmod 777 /var/lib/nginx/tmp/client_body
 
 		# Link to build area
 		sudo mv /usr/share/nginx/html /usr/share/nginx/html.ORIG
@@ -185,6 +191,47 @@ Vagrant.configure("2") do |config|
 		mysql test < /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/mysql.sql
 
 		sudo mysql < /vagrant/create_sa_user.sql
+
+		######
+		# Systemd for Node and .NET servers
+		######
+		echo << EOD > /etc/systemd/system/editor-node.service
+[Service]
+WorkingDirectory=/home/vagrant/DataTablesSrc/extensions/Editor-Node-Demo
+ExecStart=/usr/bin/node index.js
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=EditorNodeJS
+User=vagrant
+Group=vagrant
+
+[Install]
+WantedBy=multi-user.target
+EOD
+		sudo chmod +x /etc/systemd/system/editor-node.service
+		sudo systemctl start editor-node
+		sudo systemctl enable editor-node
+
+		echo << EOD > /etc/systemd/system/editor-net.service
+[Service]
+WorkingDirectory=/home/vagrant/DataTablesSrc/extensions/Editor-NETCore-Demo/Editor NET Core demo
+ExecStart=/usr/bin/dotnet run
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=EditorDotNET
+User=vagrant
+Group=vagrant
+
+[Install]
+WantedBy=multi-user.target
+EOD
+		sudo chmod +x /etc/systemd/system/editor-net.service
+		sudo systemctl start editor-net
+		sudo systemctl enable editor-net
+
+
   SHELL
 	config.vm.provision "shell", path: "setup_nfs.sh"
 	config.vm.provision "shell", privileged: false, path: "setup_env_colin.sh"
