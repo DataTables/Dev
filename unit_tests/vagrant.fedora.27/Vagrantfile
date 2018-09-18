@@ -78,7 +78,7 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y ruby ruby-devel
 		sudo gem install sass --no-user-install
 
-		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql
+		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql php-pdo_pgsql
 		sudo dnf install -y nginx
 	
 		sudo dnf install -y rsync fontconfig ssmtp sharutils
@@ -200,6 +200,7 @@ EOD
 		sudo systemctl enable editor-net
   SHELL
 	config.vm.provision "shell", path: "setup_mysql.sh"
+	config.vm.provision "shell", path: "setup_postgres.sh"
 	config.vm.provision "shell", path: "setup_nfs.sh"
 	config.vm.provision "shell", privileged: false, path: "setup_env_colin.sh"
 end
