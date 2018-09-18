@@ -41,6 +41,10 @@ npm install
 cd ../Editor-Node-Demo
 npm install
 
+# Plugins repo
+cd ..
+git@github.com:DataTables/Plugins.git
+
 # Build - will also checkout and build the extensions
 cd ~/DataTablesSrc/build
 ./make.sh all debug
