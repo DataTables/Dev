@@ -37,5 +37,5 @@ echo "localhost:5432:${DBUSER}:${DBPASS}" > ~/.pgpass
 echo "Populating postgres database"
 
 $SQL=/home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/postgres.sql
-udo -u postgres PGPASSWORD="${DBPASS}" psql -d ${DBNAME} -U {$DBUSER} -f $SQL
+sudo -u postgres PGPASSWORD="${DBPASS}" psql -d ${DBNAME} -U {$DBUSER} -f $SQL
 
