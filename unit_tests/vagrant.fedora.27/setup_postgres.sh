@@ -10,6 +10,7 @@ sudo postgresql-setup --initdb --unit postgresql
 sudo echo "
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 local   all             postgres                                peer
+local   all             sa                                      md5
 local   all             all                                     peer
 host    all             all             0.0.0.0/0               md5
 host    all             all             ::1/128                 md5
@@ -35,7 +36,6 @@ echo "localhost:5432:${DBUSER}:${DBPASS}" > ~/.pgpass
 
 echo "Populating postgres database"
 
-cp /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/postgres.sql /tmp
-sudo -d ${DBNAME} -U {$DBUSER} -f /tmp/postgres.sql
-rm /tmp/postgres.sql
+$SQL=/home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/postgres.sql
+udo -u postgres PGPASSWORD="${DBPASS}" psql -d ${DBNAME} -U {$DBUSER} -f $SQL
 
