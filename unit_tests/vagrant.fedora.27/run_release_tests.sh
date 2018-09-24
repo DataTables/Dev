@@ -43,7 +43,7 @@ for database in $databases ; do
 	for platform in $platforms ; do
 		export DT_EDITOR_URL="http://$host/extensions/Editor-$platform-Demo"
 		echo "Running tests for $DT_EDITOR_URL"
-		cd /home/vagrant/datatables-site/test
+		cd /home/vagrant/datatables-system-tests/selenium
 		npm run editor
 	done
 done

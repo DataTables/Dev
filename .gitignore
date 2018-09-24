@@ -1,0 +1,4 @@
+site_tests/vagrant.fedora.27/.vagrant/
+site_tests/vagrant.fedora.27/test_pass.txt
+unit_tests/vagrant.fedora.27/.vagrant/
+unit_tests/vagrant.fedora.27/test_pass.txt

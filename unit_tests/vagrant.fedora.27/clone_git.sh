@@ -22,19 +22,15 @@ sudo cp dt-test-tools/config_ssmtp/ssmtp.conf /etc/ssmtp/ssmtp.conf
 sudo cp dt-test-tools/config_ssmtp/revaliases /etc/ssmtp/revaliases
 
 # Test files for release tests
-# TK COLIN this needs to change when test files in their own repo
-git clone git@bitbucket.org:sprymedia/datatables-site.git
-cd datatables-site/test
+git clone git@bitbucket.org:sprymedia/datatables-system-tests.git
+cd datatables-system-tests/selenium
 npm install
-
-
-cd
 
 # Editor and packages
 # Note that if you don't have access to the bitbucket Editor repos, you'll get
 # an access error here, but it won't halt the build.
-mkdir -p DataTablesSrc/extensions
-cd DataTablesSrc/extensions
+mkdir -p ~/DataTablesSrc/extensions
+cd ~/DataTablesSrc/extensions
 git clone git@bitbucket.org:sprymedia/Editor.git
 git clone git@bitbucket.org:sprymedia/Editor-Node-Demo.git
 git clone git@bitbucket.org:sprymedia/Editor-PHP-Demo.git
