@@ -50,15 +50,16 @@ npm install
 cd ../Editor-Node-Demo
 npm install
 
+cd ../Editor-NET/DataTables-Editor-Server
+dotnet restore
+
+cd ../../Editor-NETCore-Demo/Editor\ NET\ Core\ demo
+dotnet restore
+
 # Plugins repo
-cd ..
+cd ../..
 git@github.com:DataTables/Plugins.git
 
 # Build - will also checkout and build the extensions
 cd ~/DataTablesSrc/build
 ./make.sh all debug
-
-# ugly way of common code in case editor doesn't get checked out
-# vagrant doesn't seem to support conditionals, will check at some point in the future
-mkdir -p /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
-cp /vagrant/config.php /home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/php
