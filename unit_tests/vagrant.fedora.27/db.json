@@ -9,12 +9,12 @@
 		"user": "sa",
 		"pass": "Pa55word123.",
 		"db": "test",
-		"connectionString": ""
+		"connectionString": "Host=127.0.0.1;Username=sa;Password=Pa55word123.;Database=test"
 	},
 	"sqlite": {
 		"user": "",
 		"pass": "",
 		"db": "/home/vagrant/editor.db",
-		"connectionString": ""
+		"connectionString": "Data Source=/home/vagrant/editor.db"
 	}
 }
