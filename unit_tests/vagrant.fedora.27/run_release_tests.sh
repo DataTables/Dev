@@ -31,7 +31,7 @@ for database in $databases ; do
 	echo "Testing $database"
 
 	echo "Building for $database"
-	export DBTYPE=$database
+	export DT_DBTYPE=$database
 	cd /home/vagrant/DataTablesSrc/extensions/Editor
 	sh ./make.sh debug
 	if [ $? -ne 0 ] ; then

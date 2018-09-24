@@ -199,7 +199,7 @@ EOD
   SHELL
 	config.vm.provision "shell", path: "setup_mysql.sh"
 	config.vm.provision "shell", path: "setup_postgres.sh"
-	config.vm.provision "shell", path: "setup_sqlite.sh"
+	config.vm.provision "shell", path: "sqlite_create_test_database.sh"
 	config.vm.provision "shell", path: "setup_nfs.sh"
 	config.vm.provision "shell", privileged: false, path: "setup_env_colin.sh"
 end
