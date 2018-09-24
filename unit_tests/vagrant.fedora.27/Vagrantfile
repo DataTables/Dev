@@ -86,6 +86,16 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y fedora-workstation-repositories
 		sudo dnf config-manager --set-enabled google-chrome
 		sudo dnf install -y google-chrome-stable
+	
+		# .NET Core
+		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+		wget -q https://packages.microsoft.com/config/fedora/27/prod.repo
+		sudo mv prod.repo /etc/yum.repos.d/microsoft-prod.repo
+		sudo chown root:root /etc/yum.repos.d/microsoft-prod.repo
+
+		sudo dnf install -y aspnetcore-runtime-2.1
+		sudo dnf install -y dotnet-sdk-2.1
+		sudo dnf install -y mono-devel
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
 		##################################
@@ -119,18 +129,6 @@ Vagrant.configure("2") do |config|
     	# Some env stuff
     	echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
     	echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
-
-		######
-		# .NET Core
-		######
-		sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-		wget -q https://packages.microsoft.com/config/fedora/27/prod.repo
-		sudo mv prod.repo /etc/yum.repos.d/microsoft-prod.repo
-		sudo chown root:root /etc/yum.repos.d/microsoft-prod.repo
-
-		sudo dnf install -y aspnetcore-runtime-2.1
-		sudo dnf install -y dotnet-sdk-2.1
-		sudo dnf install -y mono-devel
 
 		######
 		# nginx
