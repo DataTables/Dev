@@ -9,6 +9,7 @@ MSSQL_PID='developer'
 echo "Adding Microsoft repositories..."
 sudo curl -o /etc/yum.repos.d/mssql-server.repo https://packages.microsoft.com/config/rhel/7/mssql-server-preview.repo
 sudo curl -o /etc/yum.repos.d/msprod.repo https://packages.microsoft.com/config/rhel/7/prod.repo
+sudo rm /etc/yum.repos.d/microsoft-prod.repo
 
 echo "Installing SQL Server..."
 sudo yum install -y mssql-server
@@ -29,6 +30,7 @@ echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
 # Restart SQL Server after making configuration changes:
 echo "Restarting SQL Server..."
 sudo systemctl restart mssql-server
+sudo systemctl enable mssql-server
 
 echo "Creating tables"
 # mkdir and touch a very ugly way of checking to see if the editor clone worked
