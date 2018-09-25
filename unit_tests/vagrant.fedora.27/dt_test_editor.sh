@@ -13,11 +13,11 @@ usage() {
 ###################################
 
 
-databases="mysql postgres"
+databases="mysql postgres sqlserver"
 host="localhost"
 platforms="NETCore Node PHP"
 
-while getopts "d:h:p:" opt; do
+while getopts "d:p:" opt; do
     case $opt in
 		d) databases=$OPTARG ;; 
 		p) platforms=$OPTARG ;; 
@@ -45,7 +45,7 @@ for database in $databases ; do
 			PHP)
 				export DT_EDITOR_URL="http://$host/extensions/Editor-$platform-Demo"
 				;; 
-			Node)s
+			Node)
 				export DT_EDITOR_URL="http://$host:8001"
 				;; 
 			NETCore)
