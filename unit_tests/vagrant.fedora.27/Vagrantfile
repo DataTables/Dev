@@ -78,7 +78,7 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y ruby ruby-devel
 		sudo gem install sass --no-user-install
 
-		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql php-pdo_pgsql
+		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql php-pdo_pgsql php-pdo_dblib
 		sudo dnf install -y nginx
 	
 		sudo dnf install -y rsync fontconfig ssmtp sharutils

@@ -16,5 +16,11 @@
 		"pass": "",
 		"db": "/home/vagrant/editor.db",
 		"connectionString": "Data Source=/home/vagrant/editor.db"
+	},
+	"sqlserver": {
+		"user": "sa",
+		"pass": "Pa55word123.",
+		"db": "test",
+		"connectionString": "Server=127.0.0.1;Database=test;User Id=sa;Password=Pa55word123.;"
 	}
 }
