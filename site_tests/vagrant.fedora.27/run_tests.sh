@@ -7,7 +7,7 @@ if [ $# -eq 1 ] ; then
 fi
 
 
-cd /home/vagrant/datatables-site/test
+cd /home/vagrant/datatables-system-tests/selenium
 
 while : ; do
 	git pull 

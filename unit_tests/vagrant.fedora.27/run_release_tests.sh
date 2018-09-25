@@ -19,9 +19,9 @@ platforms="NETCore Node PHP"
 
 while getopts "d:h:p:" opt; do
     case $opt in
-    d) databases=$OPTARG ;; 
-    p) platforms=$OPTARG ;; 
-    \?) usage ;; # Handle error: unknown option or missing required argument.
+		d) databases=$OPTARG ;; 
+		p) platforms=$OPTARG ;; 
+		\?) usage ;; # Handle error: unknown option or missing required argument.
     esac
 done
 
@@ -41,7 +41,21 @@ for database in $databases ; do
 	sh /vagrant/setup_db_reset.sh $database
 
 	for platform in $platforms ; do
-		export DT_EDITOR_URL="http://$host/extensions/Editor-$platform-Demo"
+		case $platform in
+			PHP)
+				export DT_EDITOR_URL="http://$host/extensions/Editor-$platform-Demo"
+				;; 
+			Node)s
+				export DT_EDITOR_URL="http://$host:8001"
+				;; 
+			NETCore)
+				# Take a while for NETCore to get going, so have a little doze
+				export DT_EDITOR_URL="http://$host:8002"
+				sleep 5
+				;; 
+			*) usage ;; 
+		esac
+
 		echo "Running tests for $DT_EDITOR_URL"
 		cd /home/vagrant/datatables-system-tests/selenium
 		npm run editor
