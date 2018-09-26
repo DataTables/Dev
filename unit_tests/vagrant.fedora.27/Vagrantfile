@@ -197,6 +197,7 @@ EOD
 		sudo systemctl start editor-net
 		sudo systemctl enable editor-net
   SHELL
+	config.vm.provision "shell", path: "setup_closure.sh"
 	config.vm.provision "shell", path: "setup_mysql.sh"
 	config.vm.provision "shell", path: "setup_postgres.sh"
 	config.vm.provision "shell", path: "setup_sqlserver.sh"

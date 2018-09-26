@@ -58,4 +58,5 @@ git clone git@github.com:DataTables/Plugins.git
 
 # Build - will also checkout and build the extensions
 cd ~/DataTablesSrc/build
+npm install
 ./make.sh all debug
