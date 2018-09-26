@@ -56,7 +56,13 @@ for database in $databases ; do
 			*) usage ;; 
 		esac
 
-		echo "Running tests for $DT_EDITOR_URL"
+		echo "###############################################"
+		echo "Running tests for:"
+		echo "DB:       $database"
+		echo "PLATFORM: $platform"
+		echo "URL:      $DT_EDITOR_URL"
+		echo "###############################################"
+
 		cd /home/vagrant/datatables-system-tests/selenium
 		npm run editor
 	done

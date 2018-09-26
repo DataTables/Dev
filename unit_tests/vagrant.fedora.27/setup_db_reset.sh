@@ -6,7 +6,7 @@ else
 	DB="mysql"
 fi
 
-echo "Creating DB PHP reset file for $DB"
+echo "Creating DB reset file for $DB"
 DB_RESET_FILE="/home/vagrant/DataTablesSrc/built/DataTables/db_reset.php"
 
 echo "<?php" > $DB_RESET_FILE
