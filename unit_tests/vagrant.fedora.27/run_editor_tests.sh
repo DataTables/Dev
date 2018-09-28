@@ -7,7 +7,7 @@ error() {
 }
 
 usage() {
-	error "usage: $0 -h IP [host on IP] -d DB [specific database to test]"
+	error "usage: $0 -p platform [specific platform to test] -d DB [specific database to test]"
 }
 
 ###################################
