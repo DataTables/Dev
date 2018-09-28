@@ -35,6 +35,11 @@ error() {
     exit 1
 }
 
+usage() {
+    echo "Usage: $0 $*"
+    exit 1
+}
+
 log() {
     echo "$*"
 }
@@ -47,6 +52,7 @@ log() {
 
 git_commands() {
 	shift
+	echo $0
 	case $1 in
 		pull)
 			command="pull"
@@ -54,8 +60,8 @@ git_commands() {
 		status)
 			command="status"
 			;;
-		*)
-			error "usage: $0 git [ pull | status ]"
+		help|*)
+			usage "git [ help | pull | status ]"
 			;;
 	esac
 
@@ -67,6 +73,51 @@ git_commands() {
 }
 
 #############################
+# Test Editor Platform functions
+#############################
+
+test_editor_platform_commands() {
+	database=$2
+	if [ -z $2 ] ; then
+		database="help"
+	fi
+	case $database in
+		all)
+			sh /vagrant/run_editor_tests.sh -p $1
+			;;
+		help)
+			usage "test editor $1 [ all | database (mysql|postgres|sqlserver) | help ]"
+			;;
+		*)
+			sh /vagrant/run_editor_tests.sh -p $1 -d $2
+			;;
+	esac
+}
+
+#############################
+# Test Editor functions
+#############################
+
+test_editor_commands() {
+	shift
+	command=$1
+	if [ -z $1 ] ; then
+		command="help"
+	fi
+
+	case $command in
+		all)
+			sh /vagrant/run_editor_tests.sh
+			;;
+		help)
+			usage "test editor [ all | help | platform (PHP|NETCode|Node) ]"
+			;;
+		*)
+			test_editor_platform_commands $*
+	esac
+}
+
+#############################
 # Test functions
 #############################
 
@@ -74,7 +125,7 @@ test_commands() {
 	shift
 	case $1 in
 		editor)
-			sh /vagrant/run_editor_tests.sh
+			test_editor_commands $*
 			;;
 		unittest)
 			cd ~/DataTablesSrc
@@ -84,8 +135,8 @@ test_commands() {
 			cd ~/datatables-system-tests/selenium
 			npm run website
 			;;
-		*)
-			error "usage: $0 test [ editor | unittest | website ]"
+		help|*)
+			usage "test [ editor | help | unittest | website ]"
 			;;
 	esac
 }
@@ -115,7 +166,7 @@ case $1 in
 	test)
 		test_commands $*
 		;;
-	*)
-		error "usage: $0 [ build | git | test ]"
+	help|*)
+		usage "[ build | git | help | test ]"
 		;;
 esac
