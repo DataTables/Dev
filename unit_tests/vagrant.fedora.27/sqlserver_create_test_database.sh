@@ -7,6 +7,5 @@ DBNAME=$(jq -r ".sqlserver.db" < /vagrant/db.json)
 SQLCMD="/opt/mssql-tools/bin/sqlcmd"
 SQLFILE=/home/vagrant/DataTablesSrc/built/DataTables/extensions/Editor/examples/sql/sqlserver.sql
 
-$SQLCMD -S localhost -U $DBUSER -P $DBPASS -Q "DROP DATABASE ${DBNAME};"
 $SQLCMD -S localhost -U $DBUSER -P $DBPASS -Q "CREATE DATABASE ${DBNAME};"
 $SQLCMD -S localhost -U $DBUSER -P $DBPASS -d $DBNAME -i $SQLFILE 
