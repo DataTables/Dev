@@ -110,7 +110,7 @@ test_editor_commands() {
 			sh /vagrant/run_editor_tests.sh
 			;;
 		help)
-			usage "test editor [ all | help | platform (PHP|NETCode|Node) ]"
+			usage "test editor [ all | help | platform (PHP|NETCore|Node) ]"
 			;;
 		*)
 			test_editor_platform_commands $*
