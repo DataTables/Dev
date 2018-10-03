@@ -52,7 +52,6 @@ log() {
 
 git_commands() {
 	shift
-	echo $0
 	case $1 in
 		pull)
 			command="pull"

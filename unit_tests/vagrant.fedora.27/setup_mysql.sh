@@ -14,9 +14,19 @@ systemctl enable mysqld.service
 
 echo "Configuring MySQL"
 
-# sometimes mysqld takes longer to start, should find a tidy way of waiting for this
-sleep 5
-export PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
+# sometimes mysqld takes longer to start
+touch /var/log/mysqld.log
+count=0
+while [ $count -lt 20 ] ; do
+	PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
+	if [ ! -z $PASSWORD ] ; then
+		break
+	fi
+	
+	count=$((count+1))
+	sleep 1
+done
+
 cp /vagrant/mysql_my.cnf /root/.my.cnf
 echo "password = $PASSWORD" >> /root/.my.cnf
 
