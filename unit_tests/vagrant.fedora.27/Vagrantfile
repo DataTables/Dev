@@ -118,7 +118,7 @@ Vagrant.configure("2") do |config|
     	echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
 
 		sh /vagrant/setup_git.sh #{ENV['USER']}
-		sh /vagrant/clone_git.sh > /vagrant/log-clone-git.log
+		sh /vagrant/clone_git.sh
   SHELL
   config.vm.provision "shell", inline: <<-SHELL
 		##################################
