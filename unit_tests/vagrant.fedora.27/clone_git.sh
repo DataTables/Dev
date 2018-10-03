@@ -60,3 +60,7 @@ git clone git@github.com:DataTables/Plugins.git
 cd ~/DataTablesSrc/build
 npm install
 ./make.sh all debug
+
+# Web-site
+cd
+git clone git@bitbucket.org:sprymedia/DataTables-Site.git
