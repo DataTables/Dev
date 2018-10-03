@@ -14,11 +14,13 @@ usage() {
 
 
 databases="mysql postgres sqlserver"
+browsers="chrome firefox"
 host="localhost"
 platforms="NETCore Node PHP"
 
-while getopts "d:p:" opt; do
+while getopts "b:d:p:" opt; do
     case $opt in
+		b) browsers=$OPTARG ;; 
 		d) databases=$OPTARG ;; 
 		p) platforms=$OPTARG ;; 
 		\?) usage ;; # Handle error: unknown option or missing required argument.
@@ -56,15 +58,23 @@ for database in $databases ; do
 			*) usage ;; 
 		esac
 
-		echo "###############################################"
-		echo "Running tests for:"
-		echo "DB:       $database"
-		echo "PLATFORM: $platform"
-		echo "URL:      $DT_EDITOR_URL"
-		echo "###############################################"
+		for browser in $browsers ; do
 
-		cd /home/vagrant/datatables-system-tests/selenium
-		npm run editor
+			export DT_BROWSER=$browser
+
+			echo "###############################################"
+			echo "Running tests for:"
+			echo "  DB:       $DT_DBTYPE"
+			echo "  PLATFORM: $platform"
+			echo "  URL:      $DT_EDITOR_URL"
+			echo "  BROWSER:  $DT_BROWSER"
+			echo "###############################################"
+
+			cd /home/vagrant/datatables-system-tests/selenium
+			npm run editor
+
+		done
+
 	done
 done
 
