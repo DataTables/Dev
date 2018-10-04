@@ -24,6 +24,7 @@ DIRECTORIES="\
 	DataTablesSrc/extensions/Scroller \
 	DataTablesSrc/extensions/Select \
 	DataTablesSrc/extensions/Plugins \
+	DataTables-Site \
 	"
 
 #############################
