@@ -12,11 +12,15 @@ usage() {
 
 ###################################
 
+LOGFILE="/tmp/test_results.$$"
 
 databases="mysql postgres sqlserver"
 browsers="chrome firefox"
 host="localhost"
 platforms="NETCore Node PHP"
+
+
+rm -f $LOGFILE
 
 while getopts "b:d:p:" opt; do
     case $opt in
@@ -72,9 +76,21 @@ for database in $databases ; do
 
 			cd /home/vagrant/datatables-system-tests/selenium
 			npm run editor
-
+			if [ $? -ne 0 ] ; then
+				echo ""
+				echo "There were test failutes"
+				echo ""
+				echo $(date) "$DT_DBTYPE - $platform - $DT_EDITOR_URL - $DT_BROWSER" >> $LOGFILE
+			fi
 		done
-
 	done
 done
+
+if [ -f $LOGFILE ] ; then
+	cat $LOGFILE
+	rm -f $LOGFILE
+	exit 1
+fi
+
+exit 0
 
