@@ -24,6 +24,7 @@ DIRECTORIES="\
 	DataTablesSrc/extensions/Scroller \
 	DataTablesSrc/extensions/Select \
 	DataTablesSrc/extensions/Plugins \
+	DataTables-Site \
 	"
 
 #############################
@@ -72,6 +73,28 @@ git_commands() {
 }
 
 #############################
+# Test Editor Platform Database functions
+#############################
+
+test_editor_platform_database_commands() {
+	browser=$3
+	if [ -z $3 ] ; then
+		browser="help"
+	fi
+	case $browser in
+		all)
+			sh /vagrant/run_editor_tests.sh -p $1 -d $2
+			;;
+		help)
+			usage "test editor $1 $2 [ all | browser (chrome|firefox) | help ]"
+			;;
+		*)
+			sh /vagrant/run_editor_tests.sh -p $1 -d $2 -b $3
+			;;
+	esac
+}
+
+#############################
 # Test Editor Platform functions
 #############################
 
@@ -88,7 +111,7 @@ test_editor_platform_commands() {
 			usage "test editor $1 [ all | database (mysql|postgres|sqlserver) | help ]"
 			;;
 		*)
-			sh /vagrant/run_editor_tests.sh -p $1 -d $2
+			test_editor_platform_database_commands $*
 			;;
 	esac
 }

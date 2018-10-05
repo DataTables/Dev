@@ -12,13 +12,19 @@ usage() {
 
 ###################################
 
+LOGFILE="/tmp/test_results.$$"
 
 databases="mysql postgres sqlserver"
+browsers="chrome firefox"
 host="localhost"
 platforms="NETCore Node PHP"
 
-while getopts "d:p:" opt; do
+
+rm -f $LOGFILE
+
+while getopts "b:d:p:" opt; do
     case $opt in
+		b) browsers=$OPTARG ;; 
 		d) databases=$OPTARG ;; 
 		p) platforms=$OPTARG ;; 
 		\?) usage ;; # Handle error: unknown option or missing required argument.
@@ -56,15 +62,35 @@ for database in $databases ; do
 			*) usage ;; 
 		esac
 
-		echo "###############################################"
-		echo "Running tests for:"
-		echo "DB:       $database"
-		echo "PLATFORM: $platform"
-		echo "URL:      $DT_EDITOR_URL"
-		echo "###############################################"
+		for browser in $browsers ; do
 
-		cd /home/vagrant/datatables-system-tests/selenium
-		npm run editor
+			export DT_BROWSER=$browser
+
+			echo "###############################################"
+			echo "Running tests for:"
+			echo "  DB:       $DT_DBTYPE"
+			echo "  PLATFORM: $platform"
+			echo "  URL:      $DT_EDITOR_URL"
+			echo "  BROWSER:  $DT_BROWSER"
+			echo "###############################################"
+
+			cd /home/vagrant/datatables-system-tests/selenium
+			npm run editor
+			if [ $? -ne 0 ] ; then
+				echo ""
+				echo "There were test failutes"
+				echo ""
+				echo $(date) "$DT_DBTYPE - $platform - $DT_EDITOR_URL - $DT_BROWSER" >> $LOGFILE
+			fi
+		done
 	done
 done
+
+if [ -f $LOGFILE ] ; then
+	cat $LOGFILE
+	rm -f $LOGFILE
+	exit 1
+fi
+
+exit 0
 

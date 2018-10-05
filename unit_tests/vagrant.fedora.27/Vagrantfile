@@ -198,5 +198,6 @@ EOD
 	config.vm.provision "shell", path: "sqlite_create_test_database.sh"
 	config.vm.provision "shell", path: "setup_nfs.sh"
 	config.vm.provision "shell", path: "setup_env.sh"
+	config.vm.provision "shell", path: "setup_firefox.sh"
 	config.vm.provision "shell", privileged: false, path: "setup_env_colin.sh"
 end
