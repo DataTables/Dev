@@ -17,7 +17,7 @@ echo "Configuring MySQL"
 # sometimes mysqld takes longer to start
 touch /var/log/mysqld.log
 count=0
-while [ $count -lt 20 ] ; do
+while [ $count -lt 60 ] ; do
 	PASSWORD=$(grep 'A temporary password is generated for root@localhost' /var/log/mysqld.log |tail -1 | awk '{print $NF}')
 	if [ ! -z $PASSWORD ] ; then
 		break
