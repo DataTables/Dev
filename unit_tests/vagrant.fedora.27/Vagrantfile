@@ -78,6 +78,9 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y ruby ruby-devel
 		sudo gem install sass --no-user-install
 
+                # .NET
+                sudo sh /vagrant/setup_dotnet.sh
+
 		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql php-pdo_pgsql php-pdo_dblib php-mbstring
 		sudo dnf install -y nginx
 	
@@ -86,9 +89,7 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y fedora-workstation-repositories
 		sudo dnf config-manager --set-enabled google-chrome
 		sudo dnf install -y google-chrome-stable
-	
-		# .NET
-		sudo sh /vagrant/setup_dotnet.sh
+		sudo dnf install -y sqlite
   SHELL
   config.vm.provision "shell", privileged: false, inline: <<-SHELL
 		##################################
