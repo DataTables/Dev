@@ -108,7 +108,7 @@ test_editor_platform_commands() {
 			sh /vagrant/run_editor_tests.sh -p $1
 			;;
 		help)
-			usage "test editor $1 [ all | database (mysql|postgres|sqlserver) | help ]"
+			usage "test editor $1 [ all | database (mysql|postgres|sqlite|sqlserver) | help ]"
 			;;
 		*)
 			test_editor_platform_database_commands $*
