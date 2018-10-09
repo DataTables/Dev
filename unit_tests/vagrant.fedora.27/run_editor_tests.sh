@@ -14,10 +14,10 @@ usage() {
 
 LOGFILE="/tmp/test_results.$$"
 
-databases="mysql postgres sqlserver"
+databases="mysql postgres sqlserver sqlite"
 browsers="chrome firefox"
-host="localhost"
 platforms="NETCore Node PHP"
+host="localhost"
 
 
 rm -f $LOGFILE
