@@ -1,22 +1,41 @@
 #!/bin/bash
 # Usage: no args runs all tests, otherwise for the specified DB
 
+LOGFILE="/tmp/test_results.$$"
+
+DATABASES="mysql postgres sqlserver sqlite"
+BROWSERS="chrome firefox"
+PLATFORMS="NETCore Node PHP"
+
 error() {
     echo "FATAL ERROR: $*"
     exit 1
 }
 
 usage() {
-	error "usage: $0 -p platform [specific platform to test] -d DB [specific database to test]"
+	error "usage: $0 -b specific_browser -d specific_db -p specific_platform 
+	Browsers:  $BROWSERS
+	DataBases: $DATABASES
+	Platforms: $PLATFORMS
+"
+}
+
+check_supported() {
+	to_check=$1
+	shift
+	if [[ $* != *"$to_check"* ]]; then
+		echo "$to_check is not supported; options are [$*]"
+		usage
+	fi
+
 }
 
 ###################################
 
-LOGFILE="/tmp/test_results.$$"
 
-databases="mysql postgres sqlserver sqlite"
-browsers="chrome firefox"
-platforms="NETCore Node PHP"
+databases="$DATABASES"
+browsers="$BROWSERS"
+platforms="$PLATFROMS"
 host="localhost"
 
 
@@ -35,6 +54,7 @@ export DT_DATABASE_RESET="http://${host}/db_reset.php"
 
 for database in $databases ; do
 	echo "Testing $database"
+	check_supported $database $DATABASES
 
 	echo "Building for $database"
 	export DT_DBTYPE=$database
@@ -47,6 +67,7 @@ for database in $databases ; do
 	sh /vagrant/setup_db_reset.sh $database
 
 	for platform in $platforms ; do
+		check_supported $platform $PLATFORMS
 		case $platform in
 			PHP)
 				export DT_EDITOR_URL="http://$host/extensions/Editor-$platform-Demo"
@@ -63,6 +84,7 @@ for database in $databases ; do
 		esac
 
 		for browser in $browsers ; do
+			check_supported $browser $BROWSERS
 
 			export DT_BROWSER=$browser
 

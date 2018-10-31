@@ -140,6 +140,31 @@ test_editor_commands() {
 }
 
 #############################
+# Test Editor functions
+#############################
+
+test_website_commands() {
+	shift
+	command=$1
+	if [ -z $1 ] ; then
+		command="help"
+	fi
+
+	case $command in
+		once)
+			cd ~/datatables-system-tests/selenium
+			npm run website
+			;;
+		help)
+			usage "test website [ once | paused-period-in-seconds ]"
+			;;
+		*)
+			sh /vagrant/run_website_tests.sh $command
+			;;
+	esac
+}
+
+#############################
 # Test functions
 #############################
 
@@ -154,8 +179,7 @@ test_commands() {
 			npm run test
 			;;
 		website)
-			cd ~/datatables-system-tests/selenium
-			npm run website
+			test_website_commands $*
 			;;
 		help|*)
 			usage "test [ editor | help | unittest | website ]"

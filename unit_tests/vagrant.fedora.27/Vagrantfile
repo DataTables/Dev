@@ -78,12 +78,10 @@ Vagrant.configure("2") do |config|
 		sudo dnf install -y ruby ruby-devel
 		sudo gem install sass --no-user-install
 
-                # .NET
-                sudo sh /vagrant/setup_dotnet.sh
+		# .NET
+		sudo sh /vagrant/setup_dotnet.sh
 
-		sudo dnf install -y php php-tidy php-xml php-fpm php-common php-pdo php-pdo_mysql php-pdo_pgsql php-pdo_dblib php-mbstring
-		sudo dnf install -y nginx
-		sudo dnf install -y sqlite-devel sqlite-libs ruby-devel
+		sudo dnf install -y sqlite-devel sqlite-libs
 	
 		sudo dnf install -y rsync fontconfig ssmtp sharutils
 
@@ -91,23 +89,12 @@ Vagrant.configure("2") do |config|
 		sudo dnf config-manager --set-enabled google-chrome
 		sudo dnf install -y google-chrome-stable
 		sudo dnf install -y sqlite
-  SHELL
-  config.vm.provision "shell", privileged: false, inline: <<-SHELL
+	SHELL
+	config.vm.provision "shell", privileged: false, path: "setup_node.sh"
+	config.vm.provision "shell", privileged: false, inline: <<-SHELL
 		##################################
 		# Clone and build
 		##################################
-
-		# nvm and node - non-root setup
-		curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
-		export NVM_DIR="$HOME/.nvm"
-		[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-		[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-		nvm install stable
-		npm install -g gulp-cli
-		npm install -g jscrambler
-
-		sudo ln -s $(nvm which current) /usr/bin/node
-
 		######
     	# Some env stuff
     	echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
@@ -115,9 +102,10 @@ Vagrant.configure("2") do |config|
 
 		sh /vagrant/setup_git.sh #{ENV['USER']}
 		sh /vagrant/clone_git.sh
-		sh /vagrant/setup_dev_tools.sh
-  SHELL
-  config.vm.provision "shell", inline: <<-SHELL
+	SHELL
+	config.vm.provision "shell", path: "setup_web_server.sh"
+	config.vm.provision "shell", privileged: false, path: "setup_dev_tools.sh"
+	config.vm.provision "shell", inline: <<-SHELL
 		##################################
 		# Configure stuff
 		##################################
@@ -126,34 +114,6 @@ Vagrant.configure("2") do |config|
     	# Some env stuff
     	echo "export EMAIL_ADDRESS='notify@datatables.net'" >> ~/.bashrc
     	echo "export ADDITIONAL_EMAIL_ADDRESS='colin@datatables.net allan@datatables.net'" >> ~/.bashrc
-
-		######
-		# nginx
-		######
-		echo "Modify conf files"
-		sudo sed -i 's/user nginx/user vagrant/g' /etc/nginx/nginx.conf
-		sudo sed -i 's/worker_processes auto/worker_processes 1/g' /etc/nginx/nginx.conf
-		sudo sed -i 's~user = apache~user = vagrant~g' /etc/php-fpm.d/www.conf
-		sudo sed -i 's~group = apache~group = vagrant~g' /etc/php-fpm.d/www.conf
-		sudo sed -i 's~listen.acl_users = apache,nginx~listen.acl_users = apache,nginx,vagrant~g' /etc/php-fpm.d/www.conf
-
-		sudo chmod +x /var/lib/nginx
-		sudo chmod +x /var/lib/nginx/tmp
-		sudo chmod 777 /var/lib/nginx/tmp/client_body
-
-		# Link to build area
-		sudo mv /usr/share/nginx/html /usr/share/nginx/html.ORIG
-		sudo ln -s /home/vagrant/DataTablesSrc/built/DataTables /usr/share/nginx/html
-
-		# Editor Node and .NET proxies for nginx
-		sudo cp /vagrant/nginx-editor-node.conf /etc/nginx/conf.d/
-		sudo cp /vagrant/nginx-editor-netcore.conf /etc/nginx/conf.d/
-
-		echo "Start web stuff"
-		sudo service nginx start
-		sudo systemctl enable nginx
-		sudo service php-fpm start
-		sudo systemctl enable php-fpm
 
 		######
 		# Systemd for Node and .NET servers
